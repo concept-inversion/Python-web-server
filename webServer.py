@@ -70,10 +70,10 @@ class webServer(BaseHTTPRequestHandler):
                 print(data)
                 self.output += self.start 
                 self.output =   '''
-                                <form method = 'POST' enctype= 'multipart/form' action ='/Home'
+                                <form method = "POST" enctype= "multipart/form" >
                                 '''
                 form = f'''
-                     <br>Name:<br>
+                     Name:
                      <input type="text" name="Name" value="{data[0][0]}">
                      <br>Email:<br>
                      <input type="text" name="Email" value="{data[0][1]}">
@@ -111,11 +111,11 @@ class webServer(BaseHTTPRequestHandler):
                 
                 
                 self.output =   '''
-                                <form method = 'POST' enctype= 'multipart/form-data' action ='create'
+                                <form method = 'POST' enctype= 'multipart/form' action ='create' >
                                 '''
                 form = '''
                      
-                     <br>Name:<br>
+                     Name:
                      <input type="text" name="Name" value="">
                      <br>Email:<br>
                      <input type="text" name="Email" value="">
@@ -195,10 +195,11 @@ class webServer(BaseHTTPRequestHandler):
             self.send_response(301)
             self.end_headers()    
             
-            content_length = int(self.headers.get('content-length'))
-            field_data = self.rfile.read(content_length).decode()
-            fields = parse_qs(field_data)
-            print(fields)
+            length = int(self.headers.get('content-length'))
+            field_data = self.rfile.read(length).decode()
+            
+            fields = parse_qs(field_data,keep_blank_values=1)
+            print(fields)                        
         except:
             IOError
             self.send_error(400)
