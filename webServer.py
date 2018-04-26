@@ -1,23 +1,13 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from Config.crudController import CRUD
-import cgi
-
-class classServer:
-    def __init__(self, *args, **kwargs):
-        
-        port = 1995
-        server = HTTPServer(('',port),webServer)
-        print("Web server running at : ",port)
-        server.serve_forever()
-
-        
+from urllib.parse import parse_qs        
 
 class webServer(BaseHTTPRequestHandler):
         
     db =CRUD()
     output = ''
     start= '<html><body>'
-    table = '''<table style="width:100%">
+    table = '''<table style="width:100%" border="1">
             <tr>
               <th>Id</th>
               <th>Name</th>
@@ -31,6 +21,7 @@ class webServer(BaseHTTPRequestHandler):
               <th>Image</th>
               <th>Phone</th>
               <th>Dob</th>
+              <th>Actions</th>
               
             </tr> ''' 
     
@@ -62,7 +53,9 @@ class webServer(BaseHTTPRequestHandler):
                           <td>{each[9]}</td>
                           <td>{each[10]}</td>
                           <td>{each[11]}</td>
-                        
+                          <td>  <a href="http://localhost:1995/View/{each[0]}" class="button">View</a>
+                                <a href="http://localhost:1995/Delete/{each[0]}" class="button">Delete</a>
+                                <a href="http://localhost:1995/Update/{each[0]}" class="button">Update</a>
                         </tr>
                     ''')
                 self.output += '</table></body></html>'
@@ -77,31 +70,31 @@ class webServer(BaseHTTPRequestHandler):
                 print(data)
                 self.output += self.start 
                 self.output =   '''
-                                <form method = 'POST' enctype= 'multipart/form-data' action ='update'
+                                <form method = 'POST' enctype= 'multipart/form' action ='/Home'
                                 '''
                 form = f'''
                      <br>Name:<br>
-                     <input type="text" name="Name" value="{data[0][1]}">
+                     <input type="text" name="Name" value="{data[0][0]}">
                      <br>Email:<br>
-                     <input type="text" name="Email" value="">
+                     <input type="text" name="Email" value="{data[0][1]}">
                      <br>Bio:<br>
-                     <input type="text" name="Bio" value="">
+                     <input type="text" name="Bio" value="{data[0][2]}">
                      <br>Gender:<br>
-                     <input type="text" name="Gender" value="">
+                     <input type="text" name="Gender" value="{data[0][3]}">
                      <br>Link:<br>
-                     <input type="text" name="Link" value="">
+                     <input type="text" name="Link" value="{data[0][4]}">
                      <br>Address:<br>
-                     <input type="text" name="Address" value="">
+                     <input type="text" name="Address" value="{data[0][5]}">
                      <br>Longitude:<br>
-                     <input type="text" name="Longitude" value="">
+                     <input type="text" name="Longitude" value="{data[0][6]}">
                      <br>Latitude:<br>
-                     <input type="text" name="Latitude" value="">
+                     <input type="text" name="Latitude" value="{data[0][7]}">
                      <br>Image:<br>
-                     <input type="text" name="Image" value="">
+                     <input type="text" name="Image" value="{data[0][8]}">
                      <br>Phone:<br>
-                     <input type="text" name="Phone" value="">
+                     <input type="text" name="Phone" value="{data[0][9]}">
                      <br>Dob:<br>
-                     <input type="text" name="Dob" value="">
+                     <input type="text" name="Dob" value="{data[0][10]}">
                      <br><br>
                      <input type = "submit" value="submit">
                      </form>
@@ -183,6 +176,10 @@ class webServer(BaseHTTPRequestHandler):
                               <td>{each[9]}</td>
                               <td>{each[10]}</td>
                               <td>{each[11]}</td>
+                              <td> 
+                                <a href="http://localhost:1995/Delete/{each[0]}" class="button">Delete</a>
+                                <a href="http://localhost:1995/Update/{each[0]}" class="button">Update</a>
+
                                 </tr>
                             ''')
                 self.output += '</table></body></html>'
@@ -197,17 +194,14 @@ class webServer(BaseHTTPRequestHandler):
         try:
             self.send_response(301)
             self.end_headers()    
-            contentType,paramDict = cgi.parse_header(self.headers.getheader('content-type'))
-            if contentType== 'multipart/form-data':
-                fields= cgi.parse_multipart(self.rfile,paramDict)
-                messageContent = fields.get('message')
-
+            
+            content_length = int(self.headers.get('content-length'))
+            field_data = self.rfile.read(content_length).decode()
+            fields = parse_qs(field_data)
+            print(fields)
         except:
             IOError
             self.send_error(400)
-
-
-if __name__=='__main__':
-    server = classServer()
+            print("error")
 
 
