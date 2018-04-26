@@ -2,3 +2,5 @@ launch.json
 .vscode
 __pycache__
 Config/__pycache__
+Config/__pycache__/crudController.cpython-36.pyc
+Config/__pycache__/postgreModule.cpython-36.pyc
