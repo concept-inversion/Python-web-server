@@ -37,7 +37,7 @@ class webServer(BaseHTTPRequestHandler):
             path = self.path.split("/")
             if path[1]== "Home":
                 data = self.db.View()
-                self.output += self.start + self.table
+                self.output +=  "<h1> SP Co. Pvt </h1>"+self.start + self.table
                 for each in data:
                     self.output +=   (f'''
                         <tr>
@@ -58,7 +58,7 @@ class webServer(BaseHTTPRequestHandler):
                                 <a href="http://localhost:1995/Update/{each[0]}" class="button">Update</a>
                         </tr>
                     ''')
-                self.output += '</table></body></html>'
+                self.output += '</table><br><a href="http://localhost:1995/Create" class="button">Create</a></body></html>'
                 self.setHeaders()
                 self.wfile.write(self.output.encode())
                 return
@@ -73,9 +73,10 @@ class webServer(BaseHTTPRequestHandler):
                                 <form method = "POST" enctype= "multipart/form" >
                                 '''
                 form = f'''
-                     Name:
+                     <h1> Update</h1>
+                     Name:<br>
                      <input type="text" name="Name" value="{data[0][1]}">
-                     <br>Email:<br>
+                     <br> Email:<br>
                      <input type="text" name="Email" value="{data[0][2]}">
                      <br>Bio:<br>
                      <input type="text" name="Bio" value="{data[0][3]}">
@@ -97,6 +98,7 @@ class webServer(BaseHTTPRequestHandler):
                      <input type="text" name="Dob" value="{data[0][11]}">
                      <br><br>
                      <input type = "submit" value="submit">
+                     <br><a href="http://localhost:1995/Home" class="button">Home</a>
                      </form>
                     '''
                 if data: 
@@ -114,7 +116,7 @@ class webServer(BaseHTTPRequestHandler):
                                 <form method = 'POST' enctype= 'multipart/form' >
                                 '''
                 form = '''
-                     
+                     <h1> Create </h1>
                      <br>Name:<br>
                      <input type="text" name="Name" value="">
                      <br>Email:<br>
@@ -142,7 +144,7 @@ class webServer(BaseHTTPRequestHandler):
                      </form>
                     '''
                 self.output += form
-                self.output += '<html><body></body></html>'
+                self.output += '<html><body><br><a href="http://localhost:1995/Home" class="button">Home</a></body></html>'
                 self.setHeaders()
                 self.wfile.write(self.output.encode())
                 return
@@ -150,9 +152,9 @@ class webServer(BaseHTTPRequestHandler):
             if path[1] == ("Delete"):
                 Id = path[2]
                 data=self.db.Delete(f"Id={Id}")
-                self.output += '<html><body>Deleted<br><a href="http://localhost:1995/Home" class="button">Home</a></body></html>'
-                self.setHeaders()
-                self.wfile.write(self.output.encode())
+                self.send_response(301)
+                self.send_header('location','/Home')
+                self.end_headers()
                 return
 
             if path[1] == ("View"):
@@ -192,8 +194,6 @@ class webServer(BaseHTTPRequestHandler):
 
     def do_POST(self):
     
-        #self.send_response(301)
-        #self.end_headers()
         length = int(self.headers.get('content-length'))
         field_data = self.rfile.read(length).decode()
         fields = parse_qs(field_data,keep_blank_values=1)
@@ -202,17 +202,17 @@ class webServer(BaseHTTPRequestHandler):
         path = self.path.split("/")
         if path[1] == 'Create':
             self.db.Create(fields) 
-            self.output += '<html><body>Created<br><a href="http://localhost:1995/Home" class="button">Home</a></body></html>'
-            self.setHeaders()
-            self.wfile.write(self.output.encode())
+            self.send_response(301)
+            self.send_header('location','/Home')
+            self.end_headers()
                           
         elif path[1] == 'Update':
             each = fields
             Id =path[2]
             data=self.db.Update(fields,Id)
-            self.output += '<html><body>Updated<br><a href="http://localhost:1995/Home" class="button">Home</a></body></html>'
-            self.setHeaders()
-            self.wfile.write(self.output.encode())
+            self.send_response(301)
+            self.send_header('location','/Home')
+            self.end_headers()
         else:
             print('Pass')
     
