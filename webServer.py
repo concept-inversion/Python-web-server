@@ -73,6 +73,7 @@ class webServer(BaseHTTPRequestHandler):
                                 <form method = "POST" enctype= "multipart/form" >
                                 '''
                 form = f'''
+                     <div align="center"><br>
                      <h1> Update</h1>
                      Name:<br>
                      <input type="text" name="Name" value="{data[0][1]}">
@@ -99,6 +100,7 @@ class webServer(BaseHTTPRequestHandler):
                      <br><br>
                      <input type = "submit" value="submit">
                      <br><a href="http://localhost:1995/Home" class="button">Home</a>
+                     </div>
                      </form>
                     '''
                 if data: 
@@ -116,6 +118,7 @@ class webServer(BaseHTTPRequestHandler):
                                 <form method = 'POST' enctype= 'multipart/form' >
                                 '''
                 form = '''
+                     <div align="center"><br>
                      <h1> Create </h1>
                      <br>Name:<br>
                      <input type="text" name="Name" value="">
@@ -141,6 +144,7 @@ class webServer(BaseHTTPRequestHandler):
                      <input type="date" name="Dob" value="">
                      <br><br>
                      <input type = "submit" value="submit">
+                     </div>
                      </form>
                     '''
                 self.output += form
