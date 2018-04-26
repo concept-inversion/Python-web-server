@@ -67,7 +67,7 @@ class webServer(BaseHTTPRequestHandler):
                 
                 Id = path[2]
                 data = self.db.Read(f"Id = {Id}")
-                print(data)
+                
                 self.output += self.start 
                 self.output =   '''
                                 <form method = "POST" enctype= "multipart/form" >
@@ -209,7 +209,6 @@ class webServer(BaseHTTPRequestHandler):
         elif path[1] == 'Update':
             each = fields
             Id =path[2]
-            print(Id)
             data=self.db.Update(fields,Id)
             self.output += '<html><body>Updated<br><a href="http://localhost:1995/Home" class="button">Home</a></body></html>'
             self.setHeaders()
