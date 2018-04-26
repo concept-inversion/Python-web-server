@@ -21,7 +21,7 @@ class Postgre_db:
             self.Link = psycopg2.connect("dbname=postgre user=concept password=concept host=localhost port=5432 ")
             self.cursor = self.Link.cursor()
             self.createTable()
-            print("connection done")
+            
         except Error as err:
             print(err)
     
@@ -29,7 +29,7 @@ class Postgre_db:
         try:
             self.Link.commit()
             self.Link.close()
-            print('Database Closed Successfully')
+            
         except Error as err:
             print(err)
 
@@ -40,15 +40,14 @@ class Postgre_db:
                   " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
         print(statement)
         data=self.executeDB(statement,(each['Bio'],each['Name'],each['Dob'],each['Gender'],each['Email'],each['Longitude'],each['Latitude'],each['Phone'],each['Link'],each['Image'],each['Address']))   
-        print("Data Inserted")
+        
         return data
 
     def executeDB(self,statement,key):
         try:
             self.cursor.execute(statement,key)
             self.Link.commit()
-            return (self.cursor.fetchall())
-
+            return (self.cursor)
         except Error as err:
             print(err)
             self.Link.rollback()
@@ -67,7 +66,8 @@ class Postgre_db:
         statement = (
          '''
         CREATE TABLE IF NOT EXISTS PEOPLE
-        (Id SERIAL PRIMARY KEY,
+        (
+        Id SERIAL PRIMARY KEY,
         Name TEXT NOT NULL,
         Email TEXT NOT NULL,
         Bio TEXT,
@@ -84,6 +84,5 @@ class Postgre_db:
         try:
             self.cursor.execute(statement)
             self.Link.commit()
-            print("Table Created")
         except Error as err:
             print(err)

@@ -25,13 +25,13 @@ class CRUD():
 
     def Create(self,data):
         self.db.Create(data)
-        print("Create operation Successful")
+        
 
     def Update(self,param):
         statement= 'UPDATE PEOPLE SET %s'% (param)
         print(statement)
         data=self.db.executeDB(statement,param)
-        print("Data Updated")
+        
         return data 
 
     def Read(self, param):
@@ -42,7 +42,6 @@ class CRUD():
     
     def View(self,param=[]):
         statement= ' SELECT * FROM PEOPLE ' 
-        print("calling from ", self.db.Link)
         data=self.db.executeDB(statement,param)
         if data:
             return data
@@ -54,10 +53,9 @@ class CRUD():
 
     def JsonLoader(self,data):
         self.db.JsonLoader(data)
-        print("JSON uploaded")
     
     def close(self):
         self.db.closeDB()
-        print("CrUD closed")
+        
 
 
