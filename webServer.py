@@ -7,7 +7,7 @@ class webServer(BaseHTTPRequestHandler):
     db =CRUD()
     output = ''
     start= '<html><body>'
-    table = '''<table style="width:100%" border="1">
+    table = '''<table border="1">
             <tr>
               <th>Id</th>
               <th>Name</th>
@@ -74,27 +74,27 @@ class webServer(BaseHTTPRequestHandler):
                                 '''
                 form = f'''
                      Name:
-                     <input type="text" name="Name" value="{data[0][0]}">
+                     <input type="text" name="Name" value="{data[0][1]}">
                      <br>Email:<br>
-                     <input type="text" name="Email" value="{data[0][1]}">
+                     <input type="text" name="Email" value="{data[0][2]}">
                      <br>Bio:<br>
-                     <input type="text" name="Bio" value="{data[0][2]}">
+                     <input type="text" name="Bio" value="{data[0][3]}">
                      <br>Gender:<br>
-                     <input type="text" name="Gender" value="{data[0][3]}">
+                     <input type="text" name="Gender" value="{data[0][4]}">
                      <br>Link:<br>
-                     <input type="text" name="Link" value="{data[0][4]}">
+                     <input type="text" name="Link" value="{data[0][5]}">
                      <br>Address:<br>
-                     <input type="text" name="Address" value="{data[0][5]}">
+                     <input type="text" name="Address" value="{data[0][6]}">
                      <br>Longitude:<br>
-                     <input type="text" name="Longitude" value="{data[0][6]}">
+                     <input type="text" name="Longitude" value="{data[0][7]}">
                      <br>Latitude:<br>
-                     <input type="text" name="Latitude" value="{data[0][7]}">
+                     <input type="text" name="Latitude" value="{data[0][8]}">
                      <br>Image:<br>
-                     <input type="text" name="Image" value="{data[0][8]}">
+                     <input type="text" name="Image" value="{data[0][9]}">
                      <br>Phone:<br>
-                     <input type="text" name="Phone" value="{data[0][9]}">
+                     <input type="text" name="Phone" value="{data[0][10]}">
                      <br>Dob:<br>
-                     <input type="text" name="Dob" value="{data[0][10]}">
+                     <input type="text" name="Dob" value="{data[0][11]}">
                      <br><br>
                      <input type = "submit" value="submit">
                      </form>
@@ -111,11 +111,11 @@ class webServer(BaseHTTPRequestHandler):
                 
                 
                 self.output =   '''
-                                <form method = 'POST' enctype= 'multipart/form' action ='create' >
+                                <form method = 'POST' enctype= 'multipart/form' >
                                 '''
                 form = '''
                      
-                     Name:
+                     <br>Name:<br>
                      <input type="text" name="Name" value="">
                      <br>Email:<br>
                      <input type="text" name="Email" value="">
@@ -128,21 +128,21 @@ class webServer(BaseHTTPRequestHandler):
                      <br>Address:<br>
                      <input type="text" name="Address" value="">
                      <br>Longitude:<br>
-                     <input type="text" name="Longitude" value="">
+                     <input type="number" name="Longitude" value="">
                      <br>Latitude:<br>
-                     <input type="text" name="Latitude" value="">
+                     <input type="number" name="Latitude" value="">
                      <br>Image:<br>
                      <input type="text" name="Image" value="">
                      <br>Phone:<br>
-                     <input type="text" name="Phone" value="">
+                     <input type="number" name="Phone" value="">
                      <br>Dob:<br>
-                     <input type="text" name="Dob" value="">
+                     <input type="date" name="Dob" value="">
                      <br><br>
                      <input type = "submit" value="submit">
                      </form>
                     '''
                 self.output += form
-                self.output += '<html><body>Create</body></html>'
+                self.output += '<html><body></body></html>'
                 self.setHeaders()
                 self.wfile.write(self.output.encode())
                 return
@@ -150,7 +150,7 @@ class webServer(BaseHTTPRequestHandler):
             if path[1] == ("Delete"):
                 Id = path[2]
                 data=self.db.Delete(f"Id={Id}")
-                self.output += '<html><body>Deleted</body></html>'
+                self.output += '<html><body>Deleted<br><a href="http://localhost:1995/Home" class="button">Home</a></body></html>'
                 self.setHeaders()
                 self.wfile.write(self.output.encode())
                 return
@@ -182,7 +182,7 @@ class webServer(BaseHTTPRequestHandler):
 
                                 </tr>
                             ''')
-                self.output += '</table></body></html>'
+                self.output += '</table><br><a href="http://localhost:1995/Home" class="button">Home</a></body></html>'
                 self.setHeaders()
                 self.wfile.write(self.output.encode())
                 return 
@@ -191,18 +191,31 @@ class webServer(BaseHTTPRequestHandler):
             self.send_error(400)
 
     def do_POST(self):
-        try:
-            self.send_response(301)
-            self.end_headers()    
-            
-            length = int(self.headers.get('content-length'))
-            field_data = self.rfile.read(length).decode()
-            
-            fields = parse_qs(field_data,keep_blank_values=1)
-            print(fields)                        
-        except:
-            IOError
-            self.send_error(400)
-            print("error")
+    
+        #self.send_response(301)
+        #self.end_headers()
+        length = int(self.headers.get('content-length'))
+        field_data = self.rfile.read(length).decode()
+        fields = parse_qs(field_data,keep_blank_values=1)
+        for key in fields:                
+            fields[key]=fields[key][0]
+        path = self.path.split("/")
+        if path[1] == 'Create':
+            self.db.Create(fields) 
+            self.output += '<html><body>Created<br><a href="http://localhost:1995/Home" class="button">Home</a></body></html>'
+            self.setHeaders()
+            self.wfile.write(self.output.encode())
+                          
+        elif path[1] == 'Update':
+            each = fields
+            Id =path[2]
+            print(Id)
+            data=self.db.Update(fields,Id)
+            self.output += '<html><body>Updated<br><a href="http://localhost:1995/Home" class="button">Home</a></body></html>'
+            self.setHeaders()
+            self.wfile.write(self.output.encode())
+        else:
+            print('Pass')
+    
 
 
