@@ -38,9 +38,12 @@ class Postgre_db:
         #placeholders = ':'+', :'.join(each.keys())
         statement = ("INSERT INTO People ( Bio, Name, Dob, Gender, Email, Longitude, Latitude, Phone, Link, Image,Address )"
                   " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
-        print(statement)
         data=self.executeDB(statement,(each['Bio'],each['Name'],each['Dob'],each['Gender'],each['Email'],each['Longitude'],each['Latitude'],each['Phone'],each['Link'],each['Image'],each['Address']))   
-        
+        return data
+    
+    def Update(self,each,Id):
+        statement = "UPDATE  People SET Bio= %s, Name= %s, Dob= %s, Gender= %s, Email= %s, Longitude= %s, Latitude= %s, Phone= %s, Link= %s, Image= %s,Address= %s WHERE Id = %s"
+        data=self.executeDB(statement,(each['Bio'],each['Name'],each['Dob'],each['Gender'],each['Email'],each['Longitude'],each['Latitude'],each['Phone'],each['Link'],each['Image'],each['Address'],Id))   
         return data
 
     def executeDB(self,statement,key):

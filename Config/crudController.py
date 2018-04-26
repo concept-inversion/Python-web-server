@@ -27,10 +27,22 @@ class CRUD():
         self.db.Create(data)
         
 
-    def Update(self,param):
-        statement= 'UPDATE PEOPLE SET %s'% (param)
-        print(statement)
-        data=self.db.executeDB(statement,param)
+    def Update(self,each,Id):
+        #statement = f'''
+        #                    UPDATE People SET  Bio={each['Bio']},
+        #                                    Name={each['Name']},
+        #                                    Dob={each['Dob']}, 
+        #                                    Gender={each['Gender']},
+        #                                    Email={each['Email']}, 
+        #                                    Longitude={each['Longitude']},
+        #                                    Latitude={each['Latitude']},
+        #                                    Phone={each['Phone']},
+        #                                    Link={each['Link']},
+        #                                    Image={each['Image']},
+        #                                    Address={each['Address']} 
+        #                    WHERE Id = {Id} '''
+        
+        data=self.db.Update(each,Id)
         
         return data 
 
